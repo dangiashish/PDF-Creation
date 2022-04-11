@@ -16,12 +16,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,15 +51,11 @@ public class MainActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (
-                        ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE)
-                                == PackageManager.PERMISSION_GRANTED
-                                &&
-                                ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE)
-                                        == PackageManager.PERMISSION_GRANTED
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 ) {
                     createPDF();
-                } else{
+                } else {
                     requestAllPermission();
                 }
             }
@@ -78,17 +76,17 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawBitmap(scaledImageBitmap, 0, 0, paint);
 
 
+
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(50);
         paint.setColor(getResources().getColor(android.R.color.holo_blue_bright));
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        canvas.drawText("CodeByAshish", pageWidth/2, 200, paint);
-
+        canvas.drawText("CodeByAshish", pageWidth / 2, 200, paint);
 
 
         pdfDocument.finishPage(page);
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "/CodeByAshish"  + ".pdf");
+                "/CodeByAshish" + ".pdf");
 
         try {
             pdfDocument.writeTo(new FileOutputStream(file));
@@ -100,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
         pdfDocument.close();
 
 
-
     }
 
     private void requestAllPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{ READ_EXTERNAL_STORAGE,
+
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{READ_EXTERNAL_STORAGE,
                 WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == REQUEST_CODE){
+        if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
 
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (doublePress){
+        if (doublePress) {
             super.onBackPressed();
             return;
         }

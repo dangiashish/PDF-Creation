@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
@@ -82,6 +83,27 @@ public class MainActivity extends AppCompatActivity {
         paint.setColor(getResources().getColor(android.R.color.holo_blue_bright));
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         canvas.drawText("CodeByAshish", pageWidth / 2, 200, paint);
+
+        Paint line = new Paint();
+        line.setStrokeWidth(2f);
+
+        // horizontal lines
+        canvas.drawLine(150, 350, 550, 350, line);
+        canvas.drawLine(150, 400, 550, 400, line);
+        canvas.drawLine(150, 450, 550, 450, line);
+        canvas.drawLine(150, 500, 550, 500, line);
+        canvas.drawLine(150, 550, 550, 550, line);
+
+
+
+        // vertical lines
+        canvas.drawLine(150, 350, 150, 550, line);
+        canvas.drawLine(350, 350, 350, 550, line);
+        canvas.drawLine(550, 350, 550, 550, line);
+
+
+
+
 
 
         pdfDocument.finishPage(page);

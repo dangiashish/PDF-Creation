@@ -1,23 +1,23 @@
 package com.codebyashish.pdfcreation;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityJava extends AppCompatActivity {
 
     boolean doublePress = false;
     Button btnCreate;
@@ -52,13 +52,23 @@ public class MainActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    createPDF();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        createPDF();
+                    } else {
+                        requestAllPermission();
+                    }
                 } else {
-                    requestAllPermission();
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        createPDF();
+                    } else {
+                        requestAllPermission();
+                    }
                 }
+
             }
         });
 
@@ -112,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             pdfDocument.writeTo(new FileOutputStream(file));
-            Toast.makeText(this, "PDF saved successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "PDF saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,9 +133,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestAllPermission() {
-
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{READ_EXTERNAL_STORAGE,
-                WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            ActivityCompat.requestPermissions(MainActivityJava.this, new String[]{READ_MEDIA_IMAGES}, REQUEST_CODE);
+        } else {
+            ActivityCompat.requestPermissions(MainActivityJava.this, new String[]{READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+        }
     }
 
     @Override
@@ -134,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivityJava.this, "Permission Granted", Toast.LENGTH_SHORT).show();
 
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
